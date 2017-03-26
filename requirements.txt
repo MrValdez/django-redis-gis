@@ -1,0 +1,1 @@
+-e git+https://github.com/andymccurdy/redis-py.git@302731f2aeec55b274f19a43908f059f261418de#egg=redis
