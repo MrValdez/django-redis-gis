@@ -12,8 +12,8 @@ def save_location_to_redis(location):
 
 def find_locations_in_radius(category_name, lat, long, radius):
     '''
-    Given a category id, lat, long, and radius, 
-    return a list of location ids that falls within that vicinity. 
+    Given a category id, lat, long, and radius,
+    return a list of location ids that falls within that vicinity.
     Redis is used to calculate distances.
     '''
     redis_db = redis.StrictRedis()

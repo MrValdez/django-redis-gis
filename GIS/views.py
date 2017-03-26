@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import motionless
 
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -36,7 +37,7 @@ def display_map(request, location_id):
 @api_view(["GET", "POST"])
 def get_locations_within_radius(request):
     '''
-    Given a category id, lat, long, and radius, 
+    Given a category id, lat, long, and radius,
     return the locations within that vicinity.
     '''
     if request.method == "POST":
@@ -55,7 +56,8 @@ def get_locations_within_radius(request):
 
     location_ids = find_locations_in_radius(category.name, lat, long, radius)
     locations = Location.objects.filter(id__in=location_ids)
-    serializer = LocationSerializer(locations, context={'request': request}, many=True)
+    serializer = LocationSerializer(locations,
+                                    context={'request': request}, many=True)
 
     return Response(serializer.data)
 
@@ -78,8 +80,9 @@ def display_locations(request):
     except KeyError:
         map_url = None
 
+    categories = Category.objects.all().values_list("name", flat=True)
     context = {"map_url": map_url,
                "locations": locations,
-               "categories": Category.objects.all().values_list("name", flat=True),
+               "categories": categories,
                "post": request.POST}
     return render(request, "locations.html", context)
