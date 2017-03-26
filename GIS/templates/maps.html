@@ -1,0 +1,11 @@
+<form action="{% url 'display_locations' %}" method="POST">
+    {% csrf_token %}
+    <label>Longitude:</label> <input type=text name=long   value="{{post.long}}" />
+    <label>Latidue:</label>   <input type=text name=lat    value="{{post.lat}}" />
+    <label>Radius:</label>    <input type=text name=radius value="{{post.radius}}" />
+    <input type=submit />
+</form>
+
+{% if map_url %}
+<img src='{{map_url}}' />
+{% endif %}
