@@ -34,7 +34,7 @@ def display_map(request, location_id):
 
 
 @api_view(["GET", "POST"])
-def get_locations(request):
+def get_locations_within_radius(request):
     '''
     Given a lat, long, and radius, return the locations within that vicinity.
     '''
@@ -61,7 +61,7 @@ def display_locations(request):
     map = motionless.DecoratedMap()
 
     try:
-        locations = get_locations(request)
+        locations = get_locations_within_radius(request)
         for location in locations.data:
             lat, long = location["lat"], location["long"]
             lat, long = float(lat), float(long)
@@ -71,4 +71,4 @@ def display_locations(request):
         map_url = None
 
     context = {"map_url": map_url, "post": request.POST}
-    return render(request, "map.html", context)
+    return render(request, "locations.html", context)

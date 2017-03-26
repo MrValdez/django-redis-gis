@@ -1,1 +1,19 @@
-index
+<h1>REST APIs</h1>
+
+<!---
+<a href="{% url 'rest_framework:login' %}">Login for browsable rest_framework</a><br>
+<a href="{% url 'rest_framework:logout' %}">Logout for browsable rest_framework</a><br>
+--->
+
+<h2>List</h2>
+<a href="{% url 'category-list' %}">List Categories</a><br>
+<a href="{% url 'location-list' %}">List Locations</a><br>
+
+<h2>Edit and delete</h2>
+<a href="{% url 'category-detail' 1 %}">Detailed Categories id #1</a><br>
+<a href="{% url 'location-detail' 1 %}">Detailed Locations id #1</a><br>
+
+<h1>Views</h1>
+
+<a href="{% url 'display_map' 1 %}">Display map from location id #1</a><br>
+<a href="{% url 'display_locations' %}">Locations within a radius</a><br>
