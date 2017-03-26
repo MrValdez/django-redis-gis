@@ -1,0 +1,3 @@
+To sync redis with the databse, use the following command:
+
+    python manage.py syncredis

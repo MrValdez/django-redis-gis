@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from .models import Category, Location
 from .serializers import CategorySerializer, LocationSerializer
-from .utils import find_location_in_radius
+from .utils import find_locations_in_radius
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -36,7 +36,8 @@ def display_map(request, location_id):
 @api_view(["GET", "POST"])
 def get_locations_within_radius(request):
     '''
-    Given a lat, long, and radius, return the locations within that vicinity.
+    Given a category id, lat, long, and radius, 
+    return the locations within that vicinity.
     '''
     if request.method == "POST":
         params = request.POST
@@ -44,13 +45,15 @@ def get_locations_within_radius(request):
         params = request.query_params
 
     try:
+        category_name = params["category"]
         origin = params["long"], params["lat"]
         lat, long = float(origin[0]), float(origin[1])
         radius = int(params["radius"])
+        category = get_object_or_404(Category, name=category_name)
     except (KeyError, ValueError):
-        return Response({"message": "?long={}&lat={}&radius={} needed"})
+        return Response({"message": "?cat={}&long={}&lat={}&radius={} needed"})
 
-    location_ids = find_location_in_radius(lat, long, radius)
+    location_ids = find_locations_in_radius(category.name, lat, long, radius)
     locations = Location.objects.filter(id__in=location_ids)
     serializer = LocationSerializer(locations, context={'request': request}, many=True)
 
@@ -59,16 +62,24 @@ def get_locations_within_radius(request):
 
 def display_locations(request):
     map = motionless.DecoratedMap()
+    map_url = None
 
     try:
-        locations = get_locations_within_radius(request)
-        for location in locations.data:
-            lat, long = location["lat"], location["long"]
-            lat, long = float(lat), float(long)
-            map.add_marker(motionless.LatLonMarker(lat, long))
-        map_url = map.generate_url()
-    except (KeyError, TypeError):
+        locations = get_locations_within_radius(request).data
+        if locations and "message" not in locations:
+            for location in locations:
+                lat, long = location["lat"], location["long"]
+                lat, long = float(lat), float(long)
+                map.add_marker(motionless.LatLonMarker(lat, long))
+            map_url = map.generate_url()
+        else:
+            # not enough parameters in request
+            locations = []
+    except KeyError:
         map_url = None
 
-    context = {"map_url": map_url, "post": request.POST}
+    context = {"map_url": map_url,
+               "locations": locations,
+               "categories": Category.objects.all().values_list("name", flat=True),
+               "post": request.POST}
     return render(request, "locations.html", context)

@@ -1,4 +1,5 @@
 from django.db import models
+from .utils import save_location_to_redis
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -9,8 +10,12 @@ class Category(models.Model):
 class Location(models.Model):
     name = models.CharField(max_length=50)
     category = models.ForeignKey("Category")
-    long = models.DecimalField(max_digits=9, decimal_places=6)
     lat = models.DecimalField(max_digits=9, decimal_places=6)
+    long = models.DecimalField(max_digits=9, decimal_places=6)
 
     def __str__(self):
         return "{} ({}, {})".format(self.name, self.long, self.lat)
+
+    def save(self, *args, **kwargs):
+        super(Location, self).save(*args, **kwargs)
+        save_location_to_redis(self)

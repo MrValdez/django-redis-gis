@@ -1,11 +1,43 @@
 <form action="{% url 'display_locations' %}" method="POST">
     {% csrf_token %}
-    <label>Longitude:</label> <input type=text name=long   value="{{post.long}}" />
-    <label>Latidue:</label>   <input type=text name=lat    value="{{post.lat}}" />
-    <label>Radius:</label>    <input type=text name=radius value="{{post.radius}}" />
+    <label>Category:</label>
+    <select name="category">
+        {% for category in categories %}
+            <option value="{{category}}" 
+                {% ifequal categories post.category %}    selected="selected" {% endifequal %}
+            > {{category}} </option>
+        {% endfor %}
+    </select>
+    
+    <label>Longitude:</label> <input type=text name=long   value="{{post.long|default:37.502669}}" />
+    <label>Latidue:</label>   <input type=text name=lat    value="{{post.lat|default:15.087269}}" />
+    <label>Radius:</label>    <input type=text name=radius value="{{post.radius|default:1000}}" />
     <input type=submit />
 </form>
 
 {% if map_url %}
 <img src='{{map_url}}' />
+{% endif %}
+
+<br>
+
+{{locations | length}} locations found.
+
+<br>
+
+{% if locations %}
+<table>
+<tr>
+    <th>Name</th>
+    <th>Long</th>
+    <th>Lat</th>
+</tr>
+{% for location in locations %}
+    <tr>
+        <td>{{ location.name }}</td>
+        <td>{{ location.long }}</td>
+        <td>{{ location.lat }}</td>
+    </tr>
+{% endfor %}
+</table>
 {% endif %}
