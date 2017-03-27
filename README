@@ -1,3 +1,17 @@
 To sync redis with the databse, use the following command:
 
     python manage.py syncredis
+
+
+Superadmin credentials:
+Username: admin
+password: password123
+
+
+Not implemented:
+1. Redis performance report
+1. Bulk display of multiple GIS coordinates. The code for this is ready ```GIS.views.generate_map_url()```. But the UI for this wasn't completed.
+1. Bulk creation of geo location via redis.
+1. Invalid lat/long coordinates are not handled properly. Throws an unfriendly exception.
+1. Tests.
+1. Optimization. Must not do this without the tests.
