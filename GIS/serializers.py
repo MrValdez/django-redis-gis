@@ -11,4 +11,4 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
 class LocationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Location
-        fields = ("name", "category", "long", "lat")
+        fields = ("id", "name", "category", "lat", "long")

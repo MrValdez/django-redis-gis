@@ -9,8 +9,8 @@
         {% endfor %}
     </select>
     
-    <label>Longitude:</label> <input type=text name=long   value="{{post.long|default:37.502669}}" />
     <label>Latidue:</label>   <input type=text name=lat    value="{{post.lat|default:15.087269}}" />
+    <label>Longitude:</label> <input type=text name=long   value="{{post.long|default:37.502669}}" />
     <label>Radius:</label>    <input type=text name=radius value="{{post.radius|default:1000}}" />
     <input type=submit />
 </form>
