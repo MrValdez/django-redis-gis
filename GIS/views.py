@@ -47,7 +47,7 @@ def get_locations_within_radius(request):
 
     try:
         category_name = params["category"]
-        origin = params["long"], params["lat"]
+        origin = params["lat"], params["long"]
         lat, long = float(origin[0]), float(origin[1])
         radius = int(params["radius"])
         category = get_object_or_404(Category, name=category_name)
@@ -62,18 +62,24 @@ def get_locations_within_radius(request):
     return Response(serializer.data)
 
 
-def display_locations(request):
+def generate_map_url(locations):
     map = motionless.DecoratedMap()
+
+    for location in locations:
+        lat, long = location["lat"], location["long"]
+        lat, long = float(lat), float(long)
+        map.add_marker(motionless.LatLonMarker(lat, long))
+
+    return map.generate_url()
+
+
+def display_locations(request):
     map_url = None
 
     try:
         locations = get_locations_within_radius(request).data
         if locations and "message" not in locations:
-            for location in locations:
-                lat, long = location["lat"], location["long"]
-                lat, long = float(lat), float(long)
-                map.add_marker(motionless.LatLonMarker(lat, long))
-            map_url = map.generate_url()
+            map_url = generate_map_url(locations)
         else:
             # not enough parameters in request
             locations = []
