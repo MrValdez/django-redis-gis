@@ -10,6 +10,11 @@ def save_location_to_redis(location):
     redis_db.geoadd(location.category.name, lat, long, str(location.id))
 
 
+def delete_redis_location(location):
+    redis_db = redis.StrictRedis()
+    redis_db.zrem(location.category.name, str(location.id))
+
+
 def find_locations_in_radius(category_name, lat, long, radius):
     '''
     Given a category id, lat, long, and radius,

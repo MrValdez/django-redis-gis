@@ -1,5 +1,5 @@
 from django.db import models
-from .utils import save_location_to_redis
+from .utils import save_location_to_redis, delete_redis_location
 
 
 class Category(models.Model):
@@ -21,3 +21,7 @@ class Location(models.Model):
     def save(self, *args, **kwargs):
         super(Location, self).save(*args, **kwargs)
         save_location_to_redis(self)
+
+    def delete(self, *args, **kwargs):
+        delete_redis_location(self)
+        super(Location, self).delete(*args, **kwargs)
